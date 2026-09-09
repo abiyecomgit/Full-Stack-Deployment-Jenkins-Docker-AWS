@@ -1,12 +1,10 @@
-FROM node:18-alpine AS build
+FROM node:16-alpine AS build
 
 WORKDIR /app
 
-ENV NODE_OPTIONS=--openssl-legacy-provider
-
 COPY package*.json ./
 
-RUN npm ci
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
