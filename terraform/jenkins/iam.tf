@@ -1,0 +1,37 @@
+resource "aws_iam_role" "jenkins_ec2" {
+  name = "fullstack-jenkins-ec2-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = {
+    Name = "fullstack-jenkins-ec2-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.jenkins_ec2.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "jenkins" {
+  name = "fullstack-jenkins-instance-profile"
+  role = aws_iam_role.jenkins_ec2.name
+
+  tags = {
+    Name = "fullstack-jenkins-instance-profile"
+  }
+}
